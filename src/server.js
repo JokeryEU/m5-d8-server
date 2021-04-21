@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import attendees from "./attendees/index.js";
+import ErrorResponse from "./lib/errorResponse.js";
 
 const app = express();
 
@@ -18,7 +19,7 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use("/attendees", attendees);

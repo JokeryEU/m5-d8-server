@@ -1,13 +1,12 @@
-import fs from "fs-extra";
-import { join } from "path";
 import PdfPrinter from "pdfmake";
 import { pipeline } from "stream";
 import { promisify } from "util";
-import { getCurrentFolderPath } from "./fs-tools.js";
+import { pathToPDF } from "./fs-tools.js";
+import fs from "fs-extra";
 
-const asyncPipeline = promisify(pipeline);
+export const asyncPipeline = promisify(pipeline);
 
-export const generatePdf = async (data) => {
+export const generatePDF = async (data) => {
   try {
     const fonts = {
       Roboto: {
@@ -19,8 +18,16 @@ export const generatePdf = async (data) => {
     };
     const docDefinition = {
       content: [
-        "First paragraph",
-        "Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines",
+        { text: "Your booking info", style: "header" },
+        {
+          ul: [
+            `first name: ${data.firstName}`,
+            `last name: ${data.lastName}`,
+            `email: ${data.email}`,
+            `arrival time: ${data.arrivalTime}`,
+            `booking id: ${data._id}`,
+          ],
+        },
       ],
     };
 
@@ -30,9 +37,11 @@ export const generatePdf = async (data) => {
 
     pdfReadableStream.end();
 
-    const path = join(getCurrentFolderPath(import.meta.url), "example.pdf");
-    await asyncPipeline(pdfReadableStream, fs.createWriteStream(path));
-    return path;
+    await asyncPipeline(
+      pdfReadableStream,
+      fs.createWriteStream(pathToPDF(data._id))
+    );
+    return pdfReadableStream;
   } catch (error) {
     console.log(error);
     throw new Error("An error occurred when creating PDF");
