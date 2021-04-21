@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import productsRoutes from "./routes/products.js";
+import attendees from "./attendees/index.js";
 
 const app = express();
 
@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use("/attendees", productsRoutes);
+app.use("/attendees", attendees);
 
 const PORT = process.env.PORT || 5000;
 
