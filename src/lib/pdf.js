@@ -39,11 +39,11 @@ export const generatePDF = async (data) => {
 
     await asyncPipeline(
       pdfReadableStream,
-      fs.createWriteStream(pathToPDF(data._id))
+      fs.createWriteStream(pathToPDF(data))
     );
-    return pdfReadableStream;
+    // return pdfReadableStream;
   } catch (error) {
     console.log(error);
-    throw new Error("An error occurred when creating PDF");
+    throw new Error("An error occurred when creating PDF", error);
   }
 };
